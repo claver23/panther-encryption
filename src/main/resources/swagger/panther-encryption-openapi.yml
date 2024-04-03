@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Panther - Encryption API
+  version: 1.0.0
+  description: Panther encryption module for ETLions group.
+
+tags:
+  - rsa
+paths:
+  /encrypt/{plainText}:
+    get:
+      summary: encrypts the request
+      tags:
+        - rsa
+      parameters:
+        - name: plainText
+          in: path
+          description: plain text to cipher
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: encryption successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "405":
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /decrypt:
+    post:
+      summary: decrypts the request
+      tags:
+        - rsa
+      requestBody:
+        description: Decrypt request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecryptRequest'
+      responses:
+        "200":
+          description: Decryption successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "405":
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    DecryptRequest:
+      type: object
+      properties:
+        cipherText:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        photoUrl:
+          type: string
+    System:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    SuccessResponse:
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          description: Indicates if the operation was successful or not.
+        status:
+          type: number
+          description: HTTP status from the response.
+        message:
+          type: string
+          description: A brief message describing the result.
+        data:
+          type: object
+          description: The actual data payload of the response.
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorResponse'
+          description: An array of error objects if the operation encountered errors.
